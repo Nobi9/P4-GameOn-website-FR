@@ -226,6 +226,15 @@ input {
 .formData[data-error-visible="true"] .text-control {
   border: 2px solid #e54858;
 }
+.formData[data-error-visible="true"] label:after, 
+.text-label[data-error-visible="true"]::after, 
+.checkbox2-label[data-error-visible="true"]::after {
+  content: attr(data-error);
+  font-size: 1em;
+  color: #e54858;
+  margin-left: 15px;
+}
+ 
 /* 
 input[data-error]::after {
     content: attr(data-error);

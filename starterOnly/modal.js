@@ -13,6 +13,21 @@ const modalBtn = document.querySelectorAll(".modal-btn");
 const formData = document.querySelectorAll(".formData");
 const closeBtn = document.querySelector(".close");
 const form = document.querySelector(".form");
+
+
+const myFirst = document.getElementById('first');
+const myLast = document.getElementById('last');
+const myEmail = document.getElementById('email');
+const myBirthdate = document.getElementById('birthdate');
+const myQuantity = document.getElementById('quantity');
+const myLoc1 = document.getElementById('location1');
+const myLoc2 = document.getElementById('location2');
+const myLoc3 = document.getElementById('location3');
+const myLoc4 = document.getElementById('location4');
+const myLoc5 = document.getElementById('location5');
+const myLoc6 = document.getElementById('location6');
+const myCB1 = document.getElementById('checkbox1');
+
 const submitBtn = document.querySelector(".btn-submit");
 
 // launch modal event
@@ -31,7 +46,7 @@ closeBtn.addEventListener("click", shutModal);
 
 
 // =============== Form Attributes =============== //
-document.getElementById('first').setAttribute('autofocus', 'true');
+myFirst.setAttribute('autofocus', 'true');
 
 // Basic attributes for almost all inputs
 function basicAttributes(inputId){
@@ -41,19 +56,14 @@ function basicAttributes(inputId){
 }
 basicAttributes('first'); basicAttributes('last'); basicAttributes('email'); basicAttributes('birthdate'); basicAttributes('quantity');basicAttributes('checkbox1');
 
-// Attribute "pattern" for each input in the form
-function setPatterns(firstId, lastId, emailId, dateId) {
-  document.getElementById(firstId).setAttribute('pattern', "[a-zA-ZÀ-ÿ\-]{2,60}");
-  document.getElementById(lastId).setAttribute('pattern', "[a-zA-ZÀ-ÿ\-]{2,60}");
-  document.getElementById(emailId).setAttribute('pattern', "([a-zA-Z0-9]([a-zA-Z0-9\-]{0,61}[a-zA-Z0-9])?\.)+[a-zA-Z]{2,6}");
-  document.getElementById(dateId).setAttribute('pattern', "(0[1-9]|1[0-9]|2[0-9]|3[01]).(0[1-9]|1[012]).[0-9]{4}"); // N'est pas nécessaire car attribute 'date' en html5
-  // 'quantity ?'
-};
-setPatterns('first', 'last', 'email', 'birthdate');
+// Attribute "pattern"
+myFirst.setAttribute('pattern', "[a-zA-ZÀ-ÿ\-]{2,60}");
+myLast.setAttribute('pattern', "[a-zA-ZÀ-ÿ\-]{2,60}");
+myEmail.setAttribute('pattern', "([a-zA-Z0-9]([a-zA-Z0-9\-]{0,61}[a-zA-Z0-9])?\.)+[a-zA-Z]{2,6}");
+myBirthdate.setAttribute('pattern', "(0[1-9]|1[0-9]|2[0-9]|3[01]).(0[1-9]|1[012]).[0-9]{4}");
 
 // Checked box (GUC)
-document.querySelector("#checkbox1").setAttribute('checked', '');
-
+myCB1.setAttribute('checked', '');
 
 // =============== Form Validation ===============
 
@@ -62,79 +72,173 @@ let inputs = document.querySelectorAll(".listen");                      // Point
 inputs.forEach(input => {                                             // Effectue une boucle sur les inputs 
   input.addEventListener('input', () => {                             // pour écouter chacune d'entre lles
     if(
-      (document.getElementById('first').validity.valid == true)
+      (myFirst.validity.valid == true)
       &&
-      (document.getElementById('last').validity.valid == true)          // Conditions à remplir
+      (myLast.validity.valid == true)          // Conditions à remplir
       &&                                                                // c.a.d que l'input ait une propriété html5 "valid" = true
-      (document.getElementById('email').validity.valid == true)
+      (myEmail.validity.valid == true)
       &&
-      (document.getElementById('birthdate').validity.valid == true)
+      (myBirthdate.validity.valid == true)
       &&
-      (document.getElementById('quantity').validity.valid == true)
+      (myQuantity.validity.valid == true)
       &&
       (
-        (document.getElementById('location1').checked == true) 
+        (myLoc1.checked == true) 
         || 
-        (document.getElementById('location2').checked == true)
+        (myLoc2.checked == true)
         || 
-        (document.getElementById('location3').checked == true)
+        (myLoc3.checked == true)
         || 
-        (document.getElementById('location4').checked == true)
+        (myLoc4.checked == true)
         || 
-        (document.getElementById('location5').checked == true)
+        (myLoc5.checked == true)
         || 
-        (document.getElementById('location6').checked == true)
+        (myLoc6.checked == true)
       )
       &&
-      (document.getElementById('checkbox1').checked == true)
+      (myCB1.checked == true)
     ){                                                                  // Opérations à réaliser si oui
       formValidity = true;                                            
       console.log(formValidity);
+      submitBtn.style.background = '#fe142f';  
+      
     } else {         
       formValidity = false;   
-      console.log(formValidity);                                             // Sinon
+      console.log(formValidity);  
+      submitBtn.style.background = 'grey';                                           // Sinon
     } 
   });
 });
 
+document.querySelector('form div:nth-child(1) label').setAttribute('data-error', 'Veuillez saisir votre prénom (2 caractères min)');
+document.querySelector('form div:nth-child(2) label').setAttribute('data-error', 'Veuillez saisir votre nom (2 caractères min)');
+document.querySelector('form div:nth-child(3) label').setAttribute('data-error', 'Veuillez saisir une adresse e-mail valide (exemple@fai.fr).');
+document.querySelector('form div:nth-child(4) label').setAttribute('data-error', 'Veuillez saisir votre date de naissance.');
+document.querySelector('form div:nth-child(5) label').setAttribute('data-error', 'Veuillez saisir un nombre entier.');
+document.querySelector('form p').setAttribute('data-error', 'Veuillez choisir une option.');
+document.querySelector('.checkbox2-label').setAttribute('data-error', 'Vous devez vérifier que vous acceptez les termes et conditions.');
 
-submitBtn.addEventListener("click", (e) => {
+// Tentative de faire un dry-code avec une itération sur toutes les input.... echec.
+/*submitBtn.addEventListener("click", (e) => {
   if(formValidity == true)
   {
     alert("Merci d'avoir bien rempli ce formulaire");                                                        // Opérations à réaliser si oui
   } else {
     e.preventDefault();
     e.stopPropagation();
-    if(document.getElementById('first').validity.valid == false){
-      alert('Veuillez entrer 2 caractères ou plus pour le champ du prénom.')
-    } else if (document.getElementById('last').validity.valid == false){
-      alert('Veuillez entrer 2 caractères ou plus pour le champ du nom.')
-    } else if (document.getElementById('email').validity.valid == false){
-      alert('Veuillez entrer une adresse e-mail valide (exemple@fournisseur.fr).')
-    } else if (document.getElementById('birthdate').validity.valid == false) {
-      alert('Vous devez entrer votre date de naissance.')
-    } else if (document.getElementById('quantity').validity.valid == false) {
-      alert('Veuillez entrer un nombre dans le champ des participations')
-    } else if (
-      (document.getElementById('location1').checked == false) 
-      && 
-      (document.getElementById('location2').checked == false)
-      && 
-      (document.getElementById('location3').checked == false)
-      &&
-      (document.getElementById('location4').checked == false)
-      && 
-      (document.getElementById('location5').checked == false)
-      && 
-      (document.getElementById('location6').checked == false)
-    ) {
-      alert('Vous devez choisir une option.')
-    } else if (document.getElementById('checkbox1').checked == false){
-      alert('Vous devez vérifier que vous acceptez les termes et conditions.')
-    }
+
+    let divs = document.querySelectorAll(".listen");              // 
+    divs.forEach(div => {                                          // Effectue une boucle sur les inputs 
+      if(document.querySelector(`${div} input`).validity.valid == false) {
+        document.querySelector(`form ${div}`).setAttribute("data-error-visible", "true");
+      } else {
+        document.querySelector(`form ${div}`).setAttribute("data-error-visible", "false");
+      }
+    })
   }
-});
+});*/
 
-// document.querySelector('form div:nth-child(1) label').style
+submitBtn.addEventListener("click", (e) => {
+  if(formValidity == true)
+  {
+    alert("Merci d'avoir bien rempli ce formulaire");      
+                                                      // Opérations à réaliser si oui
+  } else {
 
+    e.preventDefault();
+    e.stopPropagation();
+
+    if (myFirst.validity.valid == false){
+      document.querySelector('form div:nth-child(1)').setAttribute("data-error-visible", "true");
+      myFirst.addEventListener('input', () => {
+        if (myFirst.validity.valid == true){
+          document.querySelector('form div:nth-child(1)').setAttribute("data-error-visible", "false");
+        }
+      }) 
+    } 
+
+    else if (myLast.validity.valid == false){
+      document.querySelector('form div:nth-child(2)').setAttribute("data-error-visible", "true");
+      myLast.addEventListener('input', () => {
+        if (myLast.validity.valid == true) {
+          document.querySelector('form div:nth-child(2)').setAttribute("data-error-visible", "false");
+        }
+      })
+    }
+    
+    else if (myEmail.validity.valid == false){
+      document.querySelector('form div:nth-child(3)').setAttribute("data-error-visible", "true");
+      myEmail.addEventListener('input', () => {
+        if (myEmail.validity.valid == true)
+        document.querySelector('form div:nth-child(3)').setAttribute("data-error-visible", "false");
+      })
+    }
+    
+    else if (myBirthdate.validity.valid == false){
+      document.querySelector('form div:nth-child(4)').setAttribute("data-error-visible", "true");
+      myBirthdate.addEventListener('input', () => {
+        if (myBirthdate.validity.valid == true)
+      document.querySelector('form div:nth-child(4)').setAttribute("data-error-visible", "false");
+      })
+    } 
+    
+    else if (myQuantity.validity.valid == false){
+      document.querySelector('form div:nth-child(5)').setAttribute("data-error-visible", "true");
+      myQuantity.addEventListener('input', () => {
+        if (myQuantity.validity.valid == true)
+      document.querySelector('form div:nth-child(5)').setAttribute("data-error-visible", "false");
+      })
+    }
+
+    else if (myCB1.validity.valid == false){
+      document.querySelector('.checkbox2-label').setAttribute("data-error-visible", "true");
+      myCB1.addEventListener('input', () => {
+        if (myCB1.validity.valid == true)
+      document.querySelector('.checkbox2-label').setAttribute("data-error-visible", "false");
+      })
+    }
+
+    else if (
+      (myLoc1.checked == false) 
+      && 
+      (myLoc2.checked == false)
+      && 
+      (myLoc3.checked == false)
+      &&
+      (myLoc4.checked == false)
+      && 
+      (myLoc5.checked == false)
+      && 
+      (myLoc6.checked == false)
+    ) { 
+      document.querySelector('form p').setAttribute("data-error-visible", "true");
+      let radios = document.querySelectorAll("form div:nth-child(6) input");                      // Pointe toutes les input à vérifier
+      radios.forEach(radio => {                                             // Effectue une boucle sur les inputs 
+        radio.addEventListener('input', () => {                             // pour écouter chacune d'entre lles
+          if(
+            (myLoc1.checked == true) 
+            || 
+            (myLoc2.checked == true)
+            || 
+            (myLoc3.checked == true)
+            || 
+            (myLoc4.checked == true)
+            || 
+            (myLoc5.checked == true)
+            || 
+            (myLoc6.checked == true)
+          ) {
+            document.querySelector('form p').setAttribute("data-error-visible", "false");
+          }
+        })
+      })
+    } /*else {
+      document.querySelector('form p').setAttribute("data-error-visible", "false");
+    }*/
+  }
+})
+
+
+  
+//document.querySelector('form div:nth-child(6)').setAttribute('data-error', 'Vous devez choisir une option.');
 // griser le submit tant que pas valide, mais permettre de cliquer dessus. 

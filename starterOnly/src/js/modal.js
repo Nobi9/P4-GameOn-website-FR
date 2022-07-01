@@ -13,6 +13,7 @@ const modalBtn = document.querySelectorAll(".modal-btn");
 const formData = document.querySelectorAll(".formData");
 const closeBtn = document.querySelector(".close");
 const form = document.querySelector(".form");
+const modalValidation = document.getElementById("modal-validation");
 
 
 const myFirst = document.getElementById('first');
@@ -110,11 +111,11 @@ inputs.forEach(input => {                                             // Effectu
   });
 });
 
-document.querySelector('form div:nth-child(1) label').setAttribute('data-error', 'Veuillez saisir votre prénom (2 caractères min)');
-document.querySelector('form div:nth-child(2) label').setAttribute('data-error', 'Veuillez saisir votre nom (2 caractères min)');
-document.querySelector('form div:nth-child(3) label').setAttribute('data-error', 'Veuillez saisir une adresse e-mail valide (exemple@fai.fr).');
-document.querySelector('form div:nth-child(4) label').setAttribute('data-error', 'Veuillez saisir votre date de naissance.');
-document.querySelector('form div:nth-child(5) label').setAttribute('data-error', 'Veuillez saisir un nombre entier.');
+document.querySelector('form div:nth-child(1)').setAttribute('data-error', 'Veuillez saisir votre prénom (2 caractères min)');
+document.querySelector('form div:nth-child(2)').setAttribute('data-error', 'Veuillez saisir votre nom (2 caractères min)');
+document.querySelector('form div:nth-child(3)').setAttribute('data-error', 'Veuillez saisir une adresse e-mail valide (exemple@fai.fr).');
+document.querySelector('form div:nth-child(4)').setAttribute('data-error', 'Veuillez saisir votre date de naissance.');
+document.querySelector('form div:nth-child(5)').setAttribute('data-error', 'Veuillez saisir un nombre entier.');
 document.querySelector('form p').setAttribute('data-error', 'Veuillez choisir une option.');
 document.querySelector('.checkbox2-label').setAttribute('data-error', 'Vous devez vérifier que vous acceptez les termes et conditions.');
 
@@ -141,7 +142,7 @@ document.querySelector('.checkbox2-label').setAttribute('data-error', 'Vous deve
 submitBtn.addEventListener("click", (e) => {
   if(formValidity == true)
   {
-    alert("Merci ! Votre réservation a été reçue.");      
+    modalValidation.style.display = "block";      
                                                       // Opérations à réaliser si oui
   } else {
 

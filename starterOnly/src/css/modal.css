@@ -199,15 +199,32 @@ input {
 .formData[data-error-visible="true"] .text-control {
   border: 2px solid #e54858;
 }
-.formData[data-error-visible="true"] label:after, 
+/*.formData[data-error-visible="true"] label:after, 
 .text-label[data-error-visible="true"]::after, 
 .checkbox2-label[data-error-visible="true"]::after {
   content: attr(data-error);
   font-size: 1em;
   color: #e54858;
   margin-left: 15px;
+}*/
+.formData[data-error-visible="true"]::after {
+  display: block;
+  content: attr(data-error);
+  font-size: 0.8em;
+  color: #e54858;
+  text-align: start;
+  line-height: 1.2em;
 }
- 
+/*.text-label[data-error-visible="true"] input::after*/
+
+.checkbox2-label[data-error-visible="true"]::after {
+  display: block;
+  content: attr(data-error);
+  margin-top: 5px;
+  font-size: 1.3em;
+  color: #e54858;
+  font-weight: bold;
+}
 /* 
 input[data-error]::after {
     content: attr(data-error);
@@ -458,6 +475,39 @@ input[data-error]::after {
   display: none;
 }
 
+/* MODALE DE VALIDATION SUITE AU QUESTIONNAIRE */
+
+.modal-validation-bground {
+  display: none;
+  position: fixed;
+  z-index: 3;
+  left: 0;
+  top: 0;
+  height: 100%;
+  width: 100%;
+  overflow: auto;
+  background-color: rgba(26, 39, 156, 0.4);
+}
+
+.validation-content {
+  margin: 5% auto;
+  width: 100%;
+  max-width: 500px;
+  animation-name: modalopen;
+  animation-duration: var(--modal-duration);
+  background: #232323;
+  border-radius: 10px;
+  overflow: hidden;
+  position: relative;
+  color: #fff;
+  padding-top: 10px;
+}
+
+.validation-body {
+  padding: 15px 8%;
+  margin: 15px auto;
+}
+
 
 
 @keyframes modalopen {
@@ -502,12 +552,17 @@ input[data-error]::after {
   }
   #myTopnav {
     position: relative;
+    align-items: center;
+  }
+  .header-logo {
+    margin: 0;
   }
   .main-navbar {
     position: absolute;
-    top: 5px;
-    right: 5px;
+    top: 0px;
+    right: 0px;
     z-index: 2;
+    margin: 0;
     background-color: #ffff;
   }
   .hero-section {
@@ -546,5 +601,23 @@ input[data-error]::after {
   .copyrights {
     margin-top: 50px;
     text-align: center;
+  }
+  .bground, .modal-validation-bground {
+    background-color: transparent;
+    top: 60px;
+    bottom: 0px;
+    z-index: 1;
+  }
+  .content {
+    z-index: 3;
+    max-width: 768px;
+    overflow: hidden;
+  }
+  .validation-content {
+    z-index: 3;
+    max-width: 768px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
   }
 }

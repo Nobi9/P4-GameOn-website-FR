@@ -4,7 +4,7 @@
     <meta charset="utf-8" />
     <title>Reservation</title>
     <meta name="viewport" content="width=device-width,initial-scale=1" />
-    <link rel="stylesheet" href="modal.css" />
+    <link rel="stylesheet" href="src/css/modal.css" />
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
     <link
       href="https://fonts.googleapis.com/css?family=DM+Sans"
@@ -15,7 +15,7 @@
     <div class="container">
     <div class="topnav" id="myTopnav">
       <div class="header-logo">
-        <img alt="logo" src="Logo.png"/> <!-- ici il y avait :  width="auto" height="auto" -->
+        <img alt="logo" src="src/img/Logo.png"/> <!-- ici il y avait :  width="auto" height="auto" -->
       </div>
       <div class="main-navbar">
         <a href="#" class="active"><span>Accueil</span></a>
@@ -44,7 +44,7 @@
           </button>
         </div>
         <div class="hero-img">
-          <img src="./bg_img.jpg" alt="img" />
+          <img src="src/img/bg_img.jpg" alt="img" />
         </div>
         <button class="btn-signup modal-btn">
           je m'inscris
@@ -206,6 +206,18 @@
           </div>
         </div>
       </div>
+      <div class="modal-validation-bground" id="modal-validation">
+        <div class="validation-content">
+          <span class="close"></span>
+          <div class="validation-body"></div>
+          <p>Merci pour votre inscription</p>
+          <input
+                class="btn-submit button"
+                type="submit"
+                value="Fermer"
+              />
+        </div>
+      </div>
     </main>
     <footer>
       <p class="copyrights">
@@ -213,6 +225,6 @@
       </p>
     </footer>
   </div>
-    <script src="modal.js"></script>
+    <script src="src/js/modal.js"></script>
   </body>
 </html>

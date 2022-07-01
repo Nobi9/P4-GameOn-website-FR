@@ -141,7 +141,7 @@ document.querySelector('.checkbox2-label').setAttribute('data-error', 'Vous deve
 submitBtn.addEventListener("click", (e) => {
   if(formValidity == true)
   {
-    alert("Merci d'avoir bien rempli ce formulaire");      
+    alert("Merci ! Votre réservation a été reçue.");      
                                                       // Opérations à réaliser si oui
   } else {
 
@@ -242,3 +242,62 @@ submitBtn.addEventListener("click", (e) => {
   
 //document.querySelector('form div:nth-child(6)').setAttribute('data-error', 'Vous devez choisir une option.');
 // griser le submit tant que pas valide, mais permettre de cliquer dessus. 
+
+
+/* const validationRules = [
+	{
+  	"#test":{
+    	minLength:2,
+      type:String,
+      match:'[aA-zZ]{0,12}'
+    },
+    '.textZone':{
+    	minLength:4,
+      required:true
+    }
+  }
+]
+
+const validationRules = [
+	{
+  	"#test":[new minLength(3), new checkType(String), new matchRegex('[aA-zZ]')],
+    '.textZone':{
+    	minLength:4,
+      required:true
+    }
+  }
+]
+
+for(const [key, rules] of Object.entries(validationRules)) {
+	for(const [attr, value] of Object.entries(rules)) {
+ 	const inputTag = document.querySelector(key)
+  	switch (attr) {
+    	case 'minLength':
+      	if(document.querySelector(key).value.length > value) {
+        	// Pas d'erreur
+        } else {
+         // Erreur
+        }
+        break;
+      case 'type':
+      	if(typeof inputTag.value === 'String') {
+        	...
+        } else {
+        ...;
+        }
+    }
+  }
+}
+
+for(const [key, rules] of Object.entries(validationRules)) {
+let tag = document....
+	rules.forEach(rule => {
+  	if(rule.check(tag)) {
+    	....
+    } els*/
+
+    
+/*
+const start = new Date(Date.now());
+
+console.log(start.getFullYear())*/

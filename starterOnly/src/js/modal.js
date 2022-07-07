@@ -16,6 +16,9 @@ const myFirst = document.getElementById('first');
 const myLast = document.getElementById('last');
 const myEmail = document.getElementById('email');
 const myBirthdate = document.getElementById('birthdate');
+const radiosLabel = document.querySelector('form p');
+const radiosInput = document.querySelectorAll('formData:nth-child(6)');
+const myLoc1 = document.getElementById('location1');
 const myCB1 = document.getElementById('checkbox1');
 const myCBs = document.querySelectorAll('#checkbox1, #checkbox2')
 const submitBtn = document.querySelector(".btn-submit");
@@ -27,7 +30,7 @@ document.querySelector('form div:nth-child(3)').setAttribute('data-error', 'Veui
 document.querySelector('form div:nth-child(4)').setAttribute('data-error', 'Veuillez saisir votre date de naissance.');
 document.querySelector('form div:nth-child(5)').setAttribute('data-error', 'Veuillez saisir un nombre entier.');
 document.querySelector('form p').setAttribute('data-error', 'Veuillez choisir une option.');
-document.querySelector('.form div:nth-child(8)').setAttribute('data-error', 'Vous devez vérifier que vous acceptez les termes et conditions.');
+document.querySelector('.form div:nth-child(7)').setAttribute('data-error', 'Vous devez vérifier que vous acceptez les termes et conditions.');
 
 // ==================== Functions ==================== //
 function editNav() { 
@@ -70,21 +73,21 @@ function shutValModal() {valModalBg.style.display = "None";}
 valCloseBtn.addEventListener("click", shutValModal);
 document.querySelector(".modal-validation-bground .btn-submit").addEventListener("click", shutValModal);
 
+const userDatas = [];
 function handleSubmit(){
   shutModal();
   launchValModal();
-  // gérer les données dans le tableau getFormData(form)
+  userDatas.push([getFormData(form)]);
+  console.log(userDatas);
 }
 
 
 // =============== Form Attributes =============== //
 // Basic attributes for almost all inputs
-function basicAttributes(inputId){
-  const myInput = document.getElementById(inputId);
-  myInput.setAttribute('required', '');
-  myInput.setAttribute('autocomplete', 'true');
-}
-basicAttributes('first'); basicAttributes('last'); basicAttributes('email'); basicAttributes('birthdate'); basicAttributes('quantity');basicAttributes('checkbox1');
+formSections.forEach(formSection => {
+  formSection.querySelector('input').setAttribute('required','');
+  formSection.querySelector('input').setAttribute('autocomplete','true');
+})
 
 // Attribute "pattern"
 myFirst.setAttribute('pattern', "[a-zA-ZÀ-ÿ\-]{2,60}");
@@ -99,55 +102,45 @@ myCB1.setAttribute('checked', '');
 // =============== onsubmit-click show Err msg =============== // 
 submitBtn.addEventListener('click', () => {
   console.log(getFormData(form));
-  if (!(document.querySelector('form div:nth-child(8) .required').validity.valid)) {    // ça ne marchait pas si on l'incluait dans la boucle....
-    document.querySelector('form div:nth-child(8)').setAttribute("data-error-visible", "true");}    
-    else {
                                                                            // Au click boucle sur formSections
   formSections.forEach(formSection => {                                   // pour tester unitairement la validité de chaque input.                           
-    if (!(formSection.querySelector('.required').validity.valid)) {      // Si pas valide,
-        formSection.setAttribute("data-error-visible", "true");         // Show err-msg
-                                                                       // Si valide, onChange hide err-msg
+    if (!(formSection.querySelector('[required]').validity.valid)) {     // Si pas valide,
+        formSection.setAttribute("data-error-visible", "true");         // Show err-msg,  sinon le hide err-msg se fait onChange                                         
     } 
-    if (!(getCheckedArr(oneRequired).some(isTrue))) {                               // Vérification à part de "est-ce qu'au moins un radio est coché"
-      document.querySelector('form p').setAttribute("data-error-visible", "true"); // Si pas valide, show err-msg
+    if (!(myLoc1.validity.valid)) {                               // Les radios sont connectés entre eux, il suffit d'un.
+      radiosLabel.setAttribute("data-error-visible", "true");
     }
-  })};
-    
-  });
+  })});
 
 // ========= OnChange : hide err-Msg + Enable Submit if form is valid ========== //
-
-formSections.forEach(formSection => {                                                        // Boucle sur les formSections et écoute
-  formSection.querySelector('.required, .one-required').addEventListener('input', () => {   //  la première input de chaque zone
-    
+formSections.forEach(formSection => {   // Boucle sur les formSections et écoute la première input de chaque zone
+  formSection.querySelector('[required], .one-required').addEventListener('input', () => {
     getFormData(form);                                                                 // A voir si on a le droit de collecter les données avant qu'elles soient submit ? 
-    formValidation();
+  formValidation();
 
-    if (formIsValid) {
-      console.log(formIsValid);  
-      submitBtn.style.background = '#fe142f';              // Valide, bouton rouge
-      form.removeEventListener('submit', (e) => {e.preventDefault();e.stopPropagation();});
-      //off('submit','form', (evt) => {evt.preventDefault()});
-    } 
-    if (!formIsValid){
-      submitBtn.style.background = 'grey';                // Pas valide, bouton gris
-      form.addEventListener('submit', (e) => {e.preventDefault();e.stopPropagation();})
-      //on('submit', 'form', (evt) => {evt.preventDefault();evt.stopPropagation()});
-    }               
-      
-    // HIDE ERR-MSG onChange
-      if (getCheckedArr(oneRequired).some(isTrue)) {                                          // Err-msg pour les radios
-        document.querySelector('form p').setAttribute("data-error-visible", "false");
-      }  
-      if (formSection.querySelector('.required').validity.valid) {    // "if true" sur chaque input.validity.valid
-        formSection.setAttribute("data-error-visible", "false")      // Valide ? hide err-msg
-      }
-      if (getCheckedArr(oneRequired).some(isTrue)) {
-        document.querySelector('form p').setAttribute("data-error-visible", "false");
-      }                                                             // Pas valide ? show err-msg est géré au submitClick                                                    
+  if (formIsValid) {
+    console.log(formIsValid);  
+    submitBtn.style.background = '#fe142f';              // Valide, bouton rouge
+    form.removeEventListener('submit', (e) => {e.preventDefault();e.stopPropagation();});
+    //off('submit','form', (evt) => {evt.preventDefault()});
+  } else {
+    submitBtn.style.background = 'grey';                // Pas valide, bouton gris
+    form.addEventListener('submit', (e) => {e.preventDefault();e.stopPropagation();})
+    //on('submit', 'form', (evt) => {evt.preventDefault();evt.stopPropagation()});
+  }               
+    
+  // HIDE ERR-MSG onChange
+    if (getCheckedArr(oneRequired).some(isTrue)) {                                          // Err-msg pour les radios
+      document.querySelector('form p').setAttribute("data-error-visible", "false");
+    }  
+    if (formSection.querySelector('.required').validity.valid) {    // "if true" sur chaque input.validity.valid
+      formSection.setAttribute("data-error-visible", "false")      // Valide ? hide err-msg
+    }
+    if (getCheckedArr(oneRequired).some(isTrue)) {
+      document.querySelector('form p').setAttribute("data-error-visible", "false");
+    }                                                             // Pas valide ? show err-msg est géré au submitClick                                                    
   })
 });
- 
 
 // ============================= Handling data ============================== //
 const getFormData = form => {
@@ -181,68 +174,3 @@ const getFormData = form => {
   return data;
 };
 
-// console.log(getFormData(myForm));
-// myCB1.value
-// formIsValid
-// launchValModal
-
-// Les radios ne sont pas required
-// onsubmti click, créer une instance de getFormData(form), et le push dans un tableau de stockage
-// empecher la page de refresh au submit
-
-/* const validationRules = [
-	{
-  	".textZone":{
-    	minLength:2,
-      type:String,
-      match:'[aA-zZ]{0,12}',
-      required:true,
-    },
-    "date":{
-    }
-  }
-]
-
-const validationRules = [
-	{
-  	"#test":[new minLength(3), new checkType(String), new matchRegex('[aA-zZ]')],
-    '.textZone':{
-    	minLength:4,
-      required:true
-    }
-  }
-]
-
-for(const [key, rules] of Object.entries(validationRules)) {
-	for(const [attr, value] of Object.entries(rules)) {
- 	const inputTag = document.querySelector(key)
-  	switch (attr) {
-    	case 'minLength':
-      	if(document.querySelector(key).value.length > value) {
-        	// Pas d'erreur
-        } else {
-         // Erreur
-        }
-        break;
-      case 'type':
-      	if(typeof inputTag.value === 'String') {
-        	...
-        } else {
-        ...;
-        }
-    }
-  }
-}
-
-for(const [key, rules] of Object.entries(validationRules)) {
-let tag = document....
-	rules.forEach(rule => {
-  	if(rule.check(tag)) {
-    	....
-    } els*/
-
-    
-/*
-const start = new Date(Date.now());
-
-  console.log(start.getFullYear())*/

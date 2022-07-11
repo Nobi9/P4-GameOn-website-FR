@@ -66,7 +66,7 @@
                 class="formData">
                 <label for="first">Prénom</label><br>
                 <input
-                  class="text-control required"
+                  class="text-control"
                   type="text"
                   id="first"
                   name="first"          
@@ -76,7 +76,7 @@
                 class="formData">
                 <label for="last">Nom</label><br>
                 <input
-                  class="text-control required"
+                  class="text-control"
                   type="text"
                   id="last"
                   name="last"
@@ -86,7 +86,7 @@
                 class="formData">
                 <label for="email">E-mail</label><br>
                 <input
-                  class="text-control required"
+                  class="text-control"
                   type="email"
                   id="email"
                   name="email"
@@ -96,7 +96,7 @@
                 class="formData">
                 <label for="birthdate">Date de naissance</label><br>
                 <input
-                  class="text-control required"
+                  class="text-control"
                   type="date"
                   id="birthdate"
                   name="birthdate"
@@ -105,25 +105,26 @@
               <div
                 class="formData">
                 <label for="quantity">À combien de tournois GameOn avez-vous déjà participé ?</label><br>
-                <input type="number" class="text-control required" id="quantity" name="quantity" min="0" max="99">
+                <input type="number" class="text-control" id="quantity" name="quantity" min="0" max="99">
               </div>
               
               <div
-                class="formData">
+                class="formData radios"
+              >
                 <p class="text-label">A quel tournoi souhaitez-vous participer cette année ?</p>
                 <input
-                  class="checkbox-input one-required"
+                  class="checkbox-input"
                   type="radio"
                   id="location1"
                   name="location"
                   value="New York"
-                />                                                <!-- Rajouter classe required sur chaque radio -->
+                />
                 <label class="checkbox-label" for="location1">
                   <span class="checkbox-icon"></span>
                   New York</label
                 >
                 <input
-                  class="checkbox-input one-required"
+                  class="checkbox-input"
                   type="radio"
                   id="location2"
                   name="location"
@@ -134,7 +135,7 @@
                   San Francisco</label
                 >
                 <input
-                  class="checkbox-input one-required"
+                  class="checkbox-input"
                   type="radio"
                   id="location3"
                   name="location"
@@ -145,7 +146,7 @@
                   Seattle</label
                 >
                 <input
-                  class="checkbox-input one-required"
+                  class="checkbox-input"
                   type="radio"
                   id="location4"
                   name="location"
@@ -156,7 +157,7 @@
                   Chicago</label
                 >
                 <input
-                  class="checkbox-input one-required"
+                  class="checkbox-input"
                   type="radio"
                   id="location5"
                   name="location"
@@ -167,7 +168,7 @@
                   Boston</label
                 >
                 <input
-                  class="checkbox-input one-required"
+                  class="checkbox-input"
                   type="radio"
                   id="location6"
                   name="location"
@@ -182,7 +183,7 @@
               <div
                 class="formData">
                 <input
-                  class="checkbox-input required"
+                  class="checkbox-input"
                   type="checkbox"
                   id="checkbox1"
                   name = "checkbox1"

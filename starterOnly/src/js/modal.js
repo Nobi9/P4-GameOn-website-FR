@@ -1,38 +1,3 @@
-// ========== DOM Elements ========== //
-const modalBg = document.querySelector(".bground");
-const modalBtn = document.querySelectorAll(".modal-btn");
-const formData = document.querySelectorAll(".formData");
-const required = document.querySelector('.required');
-const allRequired = document.querySelectorAll(".required");
-const oneRequired = document.querySelectorAll('.one-required')  
-const closeBtn = document.querySelector(".close");
-const form = document.querySelector(".form");
-const valModalBg = document.getElementById("modal-validation-bg");
-const valCloseBtn = document.querySelector(".validation-content .close");
-
-// ==========  FORM Elements ========== //
-let formSections = document.querySelectorAll(".formData");    
-const myFirst = document.getElementById('first');
-const myLast = document.getElementById('last');
-const myEmail = document.getElementById('email');
-const myBirthdate = document.getElementById('birthdate');
-const radiosLabel = document.querySelector('form p');
-const radiosInput = document.querySelectorAll('formData:nth-child(6)');
-const myLoc1 = document.getElementById('location1');
-const myCB1 = document.getElementById('checkbox1');
-const myCBs = document.querySelectorAll('#checkbox1, #checkbox2')
-const submitBtn = document.querySelector(".btn-submit");
-
-// =============== Error Messages =============== //
-document.querySelector('form div:nth-child(1)').setAttribute('data-error', 'Veuillez saisir votre prénom (2 caractères min)');
-document.querySelector('form div:nth-child(2)').setAttribute('data-error', 'Veuillez saisir votre nom (2 caractères min)');
-document.querySelector('form div:nth-child(3)').setAttribute('data-error', 'Veuillez saisir une adresse e-mail valide (exemple@fai.fr).');
-document.querySelector('form div:nth-child(4)').setAttribute('data-error', 'Veuillez saisir votre date de naissance.');
-document.querySelector('form div:nth-child(5)').setAttribute('data-error', 'Veuillez saisir un nombre entier.');
-document.querySelector('form p').setAttribute('data-error', 'Veuillez choisir une option.');
-document.querySelector('.form div:nth-child(7)').setAttribute('data-error', 'Vous devez vérifier que vous acceptez les termes et conditions.');
-
-// ==================== Functions ==================== //
 function editNav() { 
   var x = document.getElementById("myTopnav");
   if (x.className === "topnav") {
@@ -42,107 +7,165 @@ function editNav() {
   }
 }
 
-// ==================== Form Validation Functions ==================== //
-function getValidityArr(e){                  // Tableau d'objets clé-valeur regroupant le true/false   
-  return Object.keys(e).map(key => {            // pour chaque input, synthétisé en un simple tableau sans clés
-    return e[key].validity.valid
-  });
-}
-
-function getCheckedArr(e){                      
-  return Object.keys(e).map(key => {            // Pareil pour la propriété checked
-    return e[key].checked
-  });
-}
-
-function isTrue(e){return e === true;}          // Truthy function pour la méthode every()
-
-function formValidation(){
-  return formIsValid = isTrue(((getValidityArr(allRequired).every(isTrue))&&(getCheckedArr(oneRequired).some(isTrue))));
-}
-
-// ==================== Modal Functions ==================== //
+// ============================== DOM Elements ================================================== //
+const form = document.querySelector('form');
+const formDatas = document.querySelectorAll(".formData"); 
+const inputs = document.querySelectorAll("input[type='text'], input[type='email'], input[type='date'], input[type='number'], input[type='radio'], input[type='checkbox']");
+const myFirst = document.getElementById('first');
+const myLast = document.getElementById('last');
+const myEmail = document.getElementById('email');
+const myBirthdate = document.getElementById('birthdate');
+const myQuantity = document.getElementById('quantity');
+const radioParent = document.querySelector('.radios')
+const radios = document.querySelectorAll('input[type="radio"]')
+const myCB1 = document.getElementById('checkbox1');
+const submitBtn = document.querySelector(".btn-submit");
+const closeBtn = document.querySelector(".close");
+const modalBg = document.querySelector(".bground");
+const modalBtn = document.querySelectorAll(".modal-btn");
+const vSubBtn = document.querySelector(".modal-validation-bground .btn-submit");
+const vModalBg = document.getElementById("modal-validation-bg");
+const vCloseBtn = document.querySelector(".validation-content .close");
 function launchModal() {modalBg.style.display = "block";}
 function shutModal() {modalBg.style.display = "none";}
 modalBtn.forEach((btn) => btn.addEventListener("click", launchModal));
 closeBtn.addEventListener("click", shutModal);
 
-// ==================== ValModal Functions ==================== //
-function launchValModal() {valModalBg.style.display = "block";}
-function shutValModal() {valModalBg.style.display = "None";}
-valCloseBtn.addEventListener("click", shutValModal);
-document.querySelector(".modal-validation-bground .btn-submit").addEventListener("click", shutValModal);
+// ============================== ValModal Functions ============================================== //
+function launchVmodal() {vModalBg.style.display = "block";}
+function shutVmodal() {vModalBg.style.display = "None";}
+vCloseBtn.addEventListener("click", shutVmodal);
+vSubBtn.addEventListener("click", shutVmodal);
+
+// ============================== Form Attributes ================================================= //
+formDatas.forEach(formData => {                                     
+  formData.querySelector('input').setAttribute('required','');
+  formData.querySelector('input').setAttribute('autocomplete','true');
+})
+radios.forEach(radio => {
+  radio.setAttribute('required','');
+})
+myCB1.setAttribute('checked', '');    // pre-checked box (GUC)
+
+// ============================== Err msg Data + Functions show/hide ============================== // 
+const errors = [
+  'Veuillez saisir votre prénom (2 caractères min)', 'Veuillez saisir votre nom (2 caractères min)',
+  'Veuillez saisir une adresse e-mail valide (exemple@fai.fr).','Veuillez saisir votre date de naissance.',
+  'Veuillez saisir un nombre entier.','Veuillez choisir une option.','Vous devez vérifier que vous acceptez les termes et conditions.'
+];
+
+function hidErr(x){                                                 // Vérifie la validité de l'input
+  if(x.validity.valid){                                             // Et 
+    x.closest('div').setAttribute("data-error-visible", "false");   // Pour le mail : la propriété passe bien valide/true, mais le message ne s'enlève pas
+  }
+}
+
+function showErr(parent,key){                                        // Vérifie la validité de l'input, 
+  if (!parent.querySelector('input[required]').validity.valid) {     // et attribue un ErrMsg au parent en parcourant le tableau des errors
+    parent.setAttribute('data-error', errors[key]);                   
+    parent.setAttribute("data-error-visible", "true"); 
+  }
+}
+
+
+
+// ============================== Generates an array true/false for with every reuired inputs ============================== //
+function radiosValidity(radios){                    // Si l'on passe radios (nodList des radios) en paramètre,
+  return (Object.keys(radios).map(key => {         // Itération sur un tableau d'objets-clés, 
+    return radios[key].checked})).some(x => x === true)  // Pour retourner la valeur true si au moins un radio est checked                                                      // si l'un d'entre eux est check
+}
+
+let validityArr = [];
+function getValidityArray(inputs){                // Reçoit en paramètre l'ensemble des inputs[required] du form
+  let regex = "";                             // Génère un array objet-clé contenant la validité de chaque input  
+  validityArr = 
+    Object.keys(inputs).map(key => {    // puis en extraie les objets pour retourner un simple tableau avec la valeur true/false
+        switch (inputs[key].type) {           // pour chaque input en fonction (switch) du type d'input qui se présente
+
+          case 'text':                                          
+            regex = /[a-zA-ZÀ-ÿ\-]{2,60}/;
+            return regex.test(inputs[key].value);                             // true/false
+            break;
+
+          case 'date':
+            regex = /([12]\d{3}-(0[1-9]|1[0-2])-(0[1-9]|[12]\d|3[01]))/ ///(0[1-9]|1[0-9]|2[0-9]|3[01]).(0[1-9]|1[012]).[0-9]{4}/;
+            return regex.test(inputs[key].value);                             // true/false
+            break;
+
+          case 'email':
+            regex = /^(([^<>()\[\]\\.,;:\s@']+(\.[^<>()\[\]\\.,;:\s@']+)*)|('.+'))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+            return regex.test(inputs[key].value);                              // true/false
+            break;
+
+          case 'number':
+            regex = /[0-9]{1,2}/;
+            return regex.test(inputs[key].value);                               // true/false
+            break;
+
+          case 'checkbox': 
+            return inputs[key].checked;                                         // true/false
+            break;
+
+          case 'radio':
+            radiosValidity(radios);
+            return radiosValidity(radios)
+            break;
+          }
+    })
+  return validityArr;
+  
+}
+
+function formValidation(){                  
+  if (validityArr.every((x) => x === true)) {     // Vérifie que tout l'array soit "true"
+    submitBtn.style.background = '#fe142f';
+    form.removeEventListener('submit', (e) => {e.preventDefault();e.stopPropagation();});     // True : bouton rouge + permet l'envoi
+  } else {
+    submitBtn.style.background = 'grey';
+    form.addEventListener('submit', (e) => {e.preventDefault();e.stopPropagation();});        // False : bouton gris + pas d'envoi
+  }
+}
+
+// ============================== eventListeners & functions calls =============================== // 
+document.querySelectorAll("[required]").forEach(input => {                                         // onChange : hideErr & check form validity
+  input.addEventListener('input', () => {
+    hidErr(input);
+    getValidityArray(document.querySelectorAll("[required]"));
+    console.log(validityArr); 
+    formValidation();
+  })
+})
+submitBtn.addEventListener('click', () => {                       // onSubmitClick : showErr                                                     
+  formDatas.forEach((formData,key) => { 
+    showErr(formData,key)                                                          
+  })
+})
+
+// trouver un moyen de mettre document.querySelectorAll("[required]") dans une variable
+// Recaler hide et show sur les regex
+
+
+
+
+// ======================================================================================================================== //
+// ======================================================================================================================== //
+// =========================================== !!!!! OPTIONAL !!!!!======================================================== //
+// ======================================================================================================================== //
+// ======================================================================================================================== //
+
+
+// ======================================================================================================================== //
+// ============================================= handleSubmit & Data Function ============================================= //
+// ======================================================================================================================== //
 
 const userDatas = [];
 function handleSubmit(){
   shutModal();
-  launchValModal();
+  launchVmodal();
   userDatas.push([getFormData(form)]);
   console.log(userDatas);
 }
 
-
-// =============== Form Attributes =============== //
-// Basic attributes for almost all inputs
-formSections.forEach(formSection => {
-  formSection.querySelector('input').setAttribute('required','');
-  formSection.querySelector('input').setAttribute('autocomplete','true');
-})
-
-// Attribute "pattern"
-myFirst.setAttribute('pattern', "[a-zA-ZÀ-ÿ\-]{2,60}");
-myLast.setAttribute('pattern', "[a-zA-ZÀ-ÿ\-]{2,60}");
-myEmail.setAttribute('pattern', "([a-zA-Z0-9]([a-zA-Z0-9\-]{0,61}[a-zA-Z0-9])?\.)+[a-zA-Z]{2,6}");
-myBirthdate.setAttribute('pattern', "(0[1-9]|1[0-9]|2[0-9]|3[01]).(0[1-9]|1[012]).[0-9]{4}");
-
-// Checked box (GUC)
-myCB1.setAttribute('checked', '');
-
-
-// =============== onsubmit-click show Err msg =============== // 
-submitBtn.addEventListener('click', () => {
-  console.log(getFormData(form));
-                                                                           // Au click boucle sur formSections
-  formSections.forEach(formSection => {                                   // pour tester unitairement la validité de chaque input.                           
-    if (!(formSection.querySelector('[required]').validity.valid)) {     // Si pas valide,
-        formSection.setAttribute("data-error-visible", "true");         // Show err-msg,  sinon le hide err-msg se fait onChange                                         
-    } 
-    if (!(myLoc1.validity.valid)) {                               // Les radios sont connectés entre eux, il suffit d'un.
-      radiosLabel.setAttribute("data-error-visible", "true");
-    }
-  })});
-
-// ========= OnChange : hide err-Msg + Enable Submit if form is valid ========== //
-formSections.forEach(formSection => {   // Boucle sur les formSections et écoute la première input de chaque zone
-  formSection.querySelector('[required], .one-required').addEventListener('input', () => {
-    getFormData(form);                                                                 // A voir si on a le droit de collecter les données avant qu'elles soient submit ? 
-  formValidation();
-
-  if (formIsValid) {
-    console.log(formIsValid);  
-    submitBtn.style.background = '#fe142f';              // Valide, bouton rouge
-    form.removeEventListener('submit', (e) => {e.preventDefault();e.stopPropagation();});
-    //off('submit','form', (evt) => {evt.preventDefault()});
-  } else {
-    submitBtn.style.background = 'grey';                // Pas valide, bouton gris
-    form.addEventListener('submit', (e) => {e.preventDefault();e.stopPropagation();})
-    //on('submit', 'form', (evt) => {evt.preventDefault();evt.stopPropagation()});
-  }               
-    
-  // HIDE ERR-MSG onChange
-    if (getCheckedArr(oneRequired).some(isTrue)) {                                          // Err-msg pour les radios
-      document.querySelector('form p').setAttribute("data-error-visible", "false");
-    }  
-    if (formSection.querySelector('.required').validity.valid) {    // "if true" sur chaque input.validity.valid
-      formSection.setAttribute("data-error-visible", "false")      // Valide ? hide err-msg
-    }
-    if (getCheckedArr(oneRequired).some(isTrue)) {
-      document.querySelector('form p').setAttribute("data-error-visible", "false");
-    }                                                             // Pas valide ? show err-msg est géré au submitClick                                                    
-  })
-});
-
-// ============================= Handling data ============================== //
 const getFormData = form => {
   if (!form || form.tagName !== "FORM") return;                   // Test : si !form, fin de la fonction. 
 
@@ -155,12 +178,12 @@ const getFormData = form => {
     .call(elements)                        // we return the tag only if it is contained in `allowedTags` and if its name has a value
     .filter(node =>allowedTags.indexOf(node.tagName) !== -1 && node.name)
     .forEach(node => {                                               
-      if (node.tagName === "INPUT" && excludedInputTypes.indexOf(node.type) === -1      // in the case of an inpu
+      if (node.tagName === "INPUT" && excludedInputTypes.indexOf(node.type) === -1      // in the case of an input
       ) {
-        if ((node.type !== "radio" && node.type !== "checkbox") ||(node.type === "radio" && node.checked)) {
-          data[node.name] = node.value;
+        if ((node.type !== "radio" && node.type !== "checkbox") ||(node.type === "radio" && node.checked)) { // Si ni radio ni checkbox ou radio.checked
+          data[node.name] = node.value;                                                                      // data = value
         }
-        if (node.type === "checkbox") {
+        if (node.type === "checkbox") {                                                                       // si checkbx : data = checked
           data[node.name] = node.checked;
         }
       }
@@ -174,3 +197,56 @@ const getFormData = form => {
   return data;
 };
 
+// ======================================================================================================================== //
+// ========================================= Function all-in-one to add an input  ========================================= //
+// ======================================================================================================================== //
+
+function addInput(position, id, type, labelText, requiredTF, errMsg){
+
+  // In Form, create a new parentNode = <div class="formData"> and places it before a chosen one.
+  const newNode = document.createElement('div');
+  const refNodePosition = position;
+  const refNode = document.querySelector(`.formData:nth-child(${refNodePosition}`);
+  form.insertBefore(newNode, refNode);
+  const parentNode = document.querySelector(`form div:nth-child(${position.toString()}`);
+  parentNode.classList.add('formData'); // donner la class radios si on veut des radios
+  
+  // Create label & input as .formData childNodes
+  const newLabel = document.createElement('label');
+  const newInput = document.createElement('input');
+  parentNode.appendChild(newLabel);
+  parentNode.appendChild(newInput);
+  //const childNodes = document.querySelectorAll(`${parentNode} label, ${parentNode} input`);
+
+  // Input setup : class, attr, 
+  const input = document.querySelector(`form div:nth-child(${position.toString()}) input`);
+  input.classList.add('text-control');
+  input.setAttribute('id',`${id}`);
+  input.setAttribute('type', `${type}`);
+  input.setAttribute('name', `${id}`);
+  input.setAttribute('autocomplete', 'true');
+  if (requiredTF) {input.setAttribute('required','')};
+
+  // label setup
+  const label = document.querySelector(`form div:nth-child(${position.toString()}) label`);
+  label.setAttribute('for',`${input.id.value}`);
+  label.innerHTML=`${labelText}`;
+
+  // err msg
+  errors.splice(position, 0, `${errMsg}`);
+
+  // Regex
+  if (input.type = 'text') {
+    input.setAttribute('pattern', "[a-zA-ZÀ-ÿ\-]{2,60}");
+  } 
+  if (input.type = 'email') {
+    input.setAttribute('pattern', "([a-zA-Z0-9]([a-zA-Z0-9\-]{0,61}[a-zA-Z0-9])?\.)+[a-zA-Z]{2,6}")
+  } 
+  if (input.type = 'date') {
+    input.setAttribute('pattern', "(0[1-9]|1[0-9]|2[0-9]|3[01]).(0[1-9]|1[012]).[0-9]{4}");
+  }
+  if (input.type= 'number') {
+    input.setAttribute('pattern', '[0-9]{1,2}');
+  }
+}
+//addInput(2, 'age', 'number', 'Age', true, 'Veuillez saisir votre âge');

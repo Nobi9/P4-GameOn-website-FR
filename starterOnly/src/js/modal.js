@@ -6,7 +6,6 @@ function editNav() {
     x.className = "topnav";
   }
 }
-
 // ============================== DOM Elements ================================================== //
 const form = document.querySelector('form');
 const formDatas = document.querySelectorAll(".formData"); 
@@ -41,147 +40,84 @@ radiosInputs.forEach(radio => {
 document.getElementById('checkbox1').setAttribute('checked', '');    // pre-checked box
 
 // ============================== Err msg Data + Functions show/hide ============================== // 
-const errors = [
-  'Veuillez saisir votre prénom (2 caractères min)', 'Veuillez saisir votre nom (2 caractères min)',
-  'Veuillez saisir une adresse e-mail valide (exemple@fai.fr).','Veuillez saisir votre date de naissance.',
-  'Veuillez saisir un nombre entier.','Veuillez choisir une option.','Veuillez choisir une option.','Veuillez choisir une option.',
-  'Veuillez choisir une option.','Veuillez choisir une option.','Veuillez choisir une option.',
-  'Vous devez vérifier que vous acceptez les termes et conditions.','Vous devez vérifier que vous acceptez les termes et conditions.'
-];
+let errors = {
+  first : 'Veuillez saisir votre prénom (2 caractères min)',
+  last : 'Veuillez saisir votre nom (2 caractères min)',
+  birthdate : 'Veuillez saisir votre date de naissance.',
+  email : 'Veuillez saisir une adresse e-mail valide (exemple@fai.fr).',
+  quantity : 'Veuillez saisir un nombre entier.',
+  location : 'Veuillez choisir une option.',
+  checkbox1 : 'Vous devez vérifier que vous acceptez les termes et conditions.',
+  checkbox2 : '',
+};
 
-function hideErr(input){                                                  // Une input en paramètre
-    input.closest('div').setAttribute("data-error-visible", "false");     // Modifie son err-visible à false
+let regexArr = {
+  text : "[a-zA-ZÀ-ÿ\\-]{2,60}",
+  date : "([12]\\d{3}-(0[1-9]|1[0-2])-(0[1-9]|[12]\\d|3[01]))",
+  email : "^[\\w\-\\.]+@([\\w\\-]+\\.)+[\\w\\-]{2,4}$",
+  number : "[0-9]{1,2}",
 }
 
-function showErr(input,key){                                              // Une input et sa clé en paramètre
-  input.closest('div').setAttribute('data-error', errors[key]);           // attribue ErrMsg correspondant à sa clé au parent en parcourant le tableau des errors                   
-  input.closest('div').setAttribute("data-error-visible", "true");        // Modifie son err-visible à true
-}
-
-// ============================== radioIsChecked : génère un array de booléens pour chaque input ================= //
 function radioIsChecked(radios){                            // nodList de radios en paramètre,
   return (Object.keys(radios).map(key => {                  // Itération sur un tableau d'objets-clés,
     return radios[key].checked})).some(x => x === true)     // Pour retourner une unique valeur true si au moins un radio est checked 
 } 
 
-// ============== getValidity : génère un array de booléens contenant la validité de l'ensemble des inputs =========//
-// ===========Le booléen dépend du [type] et de la regex correspondante. getValidity call hideErr() si "true" ======//
-let validity = [];
-function getValidity(inputs){                               // Reçoit en paramètre l'ensemble des inputs du form
-  let regex = "";                                           // Génère un array objet-clé contenant la validité de chaque input  
-  validity = 
-    Object.keys(inputs).map(key => {                        // puis en extraie les objets pour retourner un simple tableau avec la valeur true/false
-        switch (inputs[key].type) {                         // pour chaque input en fonction (switch) du type d'input qui se présente
-
-          case 'text':
-            (inputs[key].required) ?
-              (regex = /[a-zA-ZÀ-ÿ\-]{2,60}/)                                   // regex si required
-              :
-              (regex = /^$|([a-zA-ZÀ-ÿ\-]{0,60})/);                             // sinon "empty okay"
-
-            if(regex.test(inputs[key].value)){
-              hideErr(inputs[key])                                              //true? : hideErr() onChange
-              inputs[key].setCustomValidity('');                                        
-            } else {
-              inputs[key].setCustomValidity(`${errors[key]}`)                   // Override la propriété HTML5 validity.valid,
-            }                                                                   // qui force le submit avec des erreurs
-
-            return regex.test(inputs[key].value);                               // return true/false in array
-            break;
-
-          case 'date':
-            (inputs[key].required) ?
-              (regex = /([12]\d{3}-(0[1-9]|1[0-2])-(0[1-9]|[12]\d|3[01]))/)      // same
-              :
-              (regex = /^$|([12]\d{0,3}-(0[1-9]|1[0-2])-(0[1-9]|[12]\d|3[01]))/);
-
-            if(regex.test(inputs[key].value)){
-              hideErr(inputs[key])
-            };
-
-            return regex.test(inputs[key].value);                             
-            break;
-
-          case 'email':                                                          // same
-            (inputs[key].required) ?                                      
-                (regex = /^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/)
-                :
-                (regex = /^$|^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/);
-            
-            if(regex.test(inputs[key].value)){
-              hideErr(inputs[key])
-              inputs[key].setCustomValidity('');                                        
-                 
-            } else {
-              inputs[key].setCustomValidity(`${errors[key]}`)                     // Pareil pour htlm5 validity.valid 
-            }
-
-            return regex.test(inputs[key].value);                              
-            break;
-
-          case 'number':                                                           // same
-            (inputs[key].required) ?
-              (regex = /[0-9]{1,2}/) 
-              :
-              (regex = /^$|[0-9]{1,2}/);
-
-            if(regex.test(inputs[key].value)){
-              hideErr(inputs[key])
-            }
-
-            return regex.test(inputs[key].value);                             
-            break;
-
-          case 'radio':                                                                                 // cf. radioIsChecked() comments
-            if(inputs[key].required && radioIsChecked(document.querySelectorAll("[type='radio']"))) {   // (required && "au moins un parmis nodList is checked")
-              hideErr(inputs[key])                                                                      // true : hideErr
-            }
-
-            return radioIsChecked(document.querySelectorAll("[type='radio']"))                          // return true/false in array
-            break;
-
-          case 'checkbox':                                                      
-            if (inputs[key].required) {             // if required, false if not checked
-              if(inputs[key].checked){              // && if checked, hideErr()
-                hideErr(inputs[key])
-              }                                     // Anyway return bool in array
-              return inputs[key].checked            
-            } else {                                // if not required,
-              hideErr(inputs[key])                  // always hideErr and return "true" in array to pass form-validity-test
-              return true
-            }
-            break;
-        /* case 'textarea': etc. */                 // add your own rules if more inputs
-        }
-    })
-
-  return validity;                                          // return array
+function isValid(input){                                              // Détermine les actions à faire si une input est valide
+  input.setCustomValidity('')                                         // passer le test de validité html5
+  input.parentNode.setAttribute('data-error-visible', 'false');       // cacher l'erreur éventuelle
 }
-const isValid = validity.every((x) => x === true);          // return one boolean depending on validity-values
+function isInvalid(input){                                              // Détermine les actions à faire si une input n'est pas valide
+  input.setCustomValidity(errors[`${input.name}`]);                     // empêcher de passer le test de validité html5
+  input.parentNode.setAttribute('data-error', `${input.validationMessage}`); // donner la data-err au parent
+  input.parentNode.setAttribute('data-error-visible', 'true');              // montrer l'erreur
+}
 
-// =============================================================================================== //
-// ============================== eventListeners & functions calls =============================== //
-// =============================================================================================== //
+function checkInputs(input){  // une input en param
+  
+  switch (input.type){ 
 
-inputs.forEach((input, key) => {                            // onChange sur toutes les inputs
-  input.addEventListener('input', () => {
-    inputs = document.querySelectorAll("input[type='text'], input[type='email'], input[type='date'], input[type='number'], input[type='radio'], input[type='checkbox']");
-    getValidity(inputs) 
-    console.log(validity);                                  // Complète l'array validity + hideErr(intégré) si valide & console.log 
-    if (!(validity[key])){input.validity.valid = false};                        
-    (isValid) ?                                             // Everything "true" ? 
-      (submitBtn.style.background = '#fe142f')              // True : bouton rouge + permet l'envoi;
-      : 
-      (submitBtn.style.background = 'grey')                 // False : bouton gris + pas d'envoi; 
-  })
-})
+    case 'text': case 'date': case 'email': case 'number':
+      const regexType = regexArr[`${input.type}`];          // Selectionne la regex adaptée à cette input dans le tableau des regex
+      let regex = RegExp('');
+      
+      (input.required) ?                                                  // input required ? 
+        (regex = RegExp(regexType)) : (regex = RegExp('^$|'+ regexType)); // True : regex en fonction du type d'input. False : regex idem mais avec la possibilité "empty
+        
+      (regex.test(input.value)) ?                                         // L'input match la regex ? 
+        (isValid(input)) : (isInvalid(input))     
+      break;
 
-submitBtn.addEventListener('click', () => {                 // onSubmitClick : showErr                                                     
-  inputs.forEach((input, key) => {
-    if (!(validity[key])) {
-      showErr(input, key)
-    }
-  })                                                        
+    case 'radio' : 
+      if(input.required){                                                 // Radio required ? 
+        if(radioIsChecked(document.querySelectorAll("[type='radio']"))){  // un radio parmis les radio est checké ? 
+          isValid(input)
+        } else {                                                          // aucun radio checked ? 
+          isInvalid(input)
+        }
+      } else {                                                             // If not required ?
+        isValid(input)
+      }
+      break;
+
+    case 'checkbox' : 
+      if (input.required) {             // checkbox required ? 
+        if(input.checked){                // checked ?  
+          isValid(input)
+        } else {                          // If not ?
+          isInvalid(input)
+        }                                     
+      } else {                         // checkbox not required ? 
+        isValid(input)
+      }
+      break;
+  }
+};
+
+submitBtn.addEventListener('click', () => {  // ajouter keypress ? 
+    inputs.forEach((input) => {
+      checkInputs(input)
+    })
 })
 
 form.addEventListener('submit', (e) => {
@@ -193,7 +129,6 @@ form.addEventListener('submit', (e) => {
   shutModal();                                                                          // ..
   launchVmodal(); 
 })
-
 
 // ======================================================================================================================== //
 // ======================================================================================================================== //
@@ -238,43 +173,3 @@ const getFormData = form => {
     });
   return data;
 };
-
-// ======================================================================================================================== //
-// ========================================= Function all-in-one to add an input  ========================================= //
-// ======================================================================================================================== //
-//test : addInput(2, 'age', 'number', 'Age', true, 'Veuillez saisir votre âge');
-function addInput(position, id, type, labelText, requiredTF, errMsg){
-
-  // In Form, create a new parentNode = <div class="formData"> and places it before a chosen one.
-  const newNode = document.createElement('div');
-  const refNodePosition = position;
-  const refNode = document.querySelector(`.formData:nth-child(${refNodePosition}`);
-  form.insertBefore(newNode, refNode);
-  const parentNode = document.querySelector(`form div:nth-child(${position.toString()}`);
-  parentNode.classList.add('formData'); // donner la class radios si on veut des radios
-  
-  // Create label & input as .formData childNodes
-  const newLabel = document.createElement('label');
-  const newInput = document.createElement('input');
-  parentNode.appendChild(newLabel);
-  parentNode.appendChild(newInput);
-  //const childNodes = document.querySelectorAll(`${parentNode} label, ${parentNode} input`);
-
-  // Input setup : class, attr, 
-  const input = document.querySelector(`form div:nth-child(${position.toString()}) input`);
-  input.classList.add('text-control');
-  input.setAttribute('id',`${id}`);
-  input.setAttribute('type', `${type}`);
-  input.setAttribute('name', `${id}`);
-  input.setAttribute('autocomplete', 'true');
-  if (requiredTF) {input.setAttribute('required','')};
-
-  // label setup
-  const label = document.querySelector(`form div:nth-child(${position.toString()}) label`);
-  label.setAttribute('for',`${input.id.value}`);
-  label.innerHTML=`${labelText}`;
-
-  // err msg
-  let errPos = position -1;
-  errors.splice(errPos, 0, `${errMsg}`);
-}

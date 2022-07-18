@@ -36,7 +36,7 @@ formDatas.forEach(formData => {
 
 document.getElementById('checkbox1').setAttribute('checked', '');    // pre-checked box
 document.getElementById('checkbox1').setAttribute('required','');
-// ============================== Err msg Data + Functions show/hide ============================== // 
+// ============================== ErrMsg Data + Functions show/hide ============================== // 
 let errors = {
   first : 'Veuillez saisir votre prénom (2 caractères min)',
   last : 'Veuillez saisir votre nom (2 caractères min)',
@@ -80,8 +80,7 @@ function checkInputs(input){  // une input en param
       (regex.test(input.value)) ?                                         // L'input match la regex ? 
         (isValid(input)) : (isInvalid(input));                            // show / hide errMsg
         
-      userData.push(input.value);                 // stocke la valeur
-      formValidity.push(regex.test(input.value))  // stocke la validité
+      userData.push(input.value);                                        // stocke la data
       break;
 
     case 'radio':
@@ -90,43 +89,32 @@ function checkInputs(input){  // une input en param
       let oneIsRequired = siblings.find(e => e.required);
 
       ((oneIsChecked && oneIsRequired) || !oneIsRequired) ? 
-        (formValidity.push(true))                                       // Un check + required ou pas required ? TRUE
-        :
-        (formValidity.push(false));                                     // 
+        (isValid(input)) : (isInvalid(input));                    // Un check + required ou pas required ? TRUE
 
       (oneIsChecked) ?                                         // Pas check et required : 'null' + false
-        (userData.push(input.parentNode.querySelector(':checked').value))
-        : 
-        (userData.push('empty'));
+        (userData.push(input.parentNode.querySelector(':checked').value)) : (userData.push('empty'));
       break;
 
     case 'checkbox' : 
-      if((input.required && input.checked) || !input.required) {   // (radio required + checked) OU not required ? 
-        isValid(input);
-        formValidity.push(true);
-       } else {
-        isInvalid(input);
-        formValidity.push(false);
-       }
+      ((input.required && input.checked) || !input.required) ?   // (radio required + checked) OU not required ? 
+        (isValid(input)) : (isInvalid(input))
       userData.push(input.checked);
       break;
   }
 }
 
 submitBtn.addEventListener('click', () => {  // ajouter keypress ?
-    userData = [];                           // Vide les tableaux avant de les remplir
-    formValidity = [];
+    userData = [];                           // Vide le tableau avant de le remplir
     inputs.forEach((input) => {
       checkInputs(input)                     // Boucle sur toutes les input, pour valider le form et stocker les datas
     });
-    userData.splice(5,5);                    // Supprime les data en trop généré par le forEach() au niveau des radio 
-    return console.log(userData);
+    userData.splice(5,5);                    // Supprime les data en trop généré par le forEach() au niveau des radios 
 })
 
 form.addEventListener('submit', e => {
       e.preventDefault(); // this will stop the event from further propagation and the submission will not be executed
       e.stopPropagation(); //not always necessary
       console.log(userData)
-      shutModal();                                                                          // ..
+      shutModal();
       launchVmodal();     
 });

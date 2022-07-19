@@ -49,7 +49,7 @@ let errors = {
 };
 
 let regexArr = {
-  text : "[a-zA-ZÀ-ÿ\\-]{2,60}",
+  text : "^[a-zA-ZàáâäãåąčćęèéêëėįìíîïłńòóôöõøùúûüųūÿýżźñçčšžÀÁÂÄÃÅĄĆČĖĘÈÉÊËÌÍÎÏĮŁŃÒÓÔÖÕØÙÚÛÜŲŪŸÝŻŹÑßÇŒÆČŠŽ∂ð ,.'-]+$",
   date : "([12]\\d{3}-(0[1-9]|1[0-2])-(0[1-9]|[12]\\d|3[01]))",
   email : "^[\\w\-\\.]+@([\\w\\-]+\\.)+[\\w\\-]{2,4}$",
   number : "[0-9]{1,2}",
@@ -59,7 +59,7 @@ let userData = [];
 let formValidity = [];
 
 function isValid(input){                                              // Détermine les actions à faire si une input est valide
-  input.setCustomValidity('')                                         // passer le test de validité html5
+  input.setCustomValidity('');                                         // passer le test de validité html5
   input.parentNode.setAttribute('data-error-visible', 'false');       // cacher l'erreur éventuelle
 }
 
@@ -70,10 +70,11 @@ function isInvalid(input){                                              // Déte
 }
 
 function checkInputs(input){  // une input en param
+  let regex = RegExp('');
   switch (input.type){ 
 
-    case 'text': case 'date': case 'email': case 'number':
-      let regex = RegExp('');
+    case 'text': case 'email': case 'number':
+      regex = RegExp('');
       (input.required) ?                                                  // input required ? 
         (regex = RegExp(regexArr[`${input.type}`])) : (regex = RegExp('^$|'+ regexArr[`${input.type}`])); // True : regex en fonction du type d'input. False : regex idem mais avec la possibilité "empty
         
@@ -83,6 +84,18 @@ function checkInputs(input){  // une input en param
       userData.push(input.value);                                        // stocke la data
       break;
 
+      case 'date':
+        regex = RegExp('');
+        (input.required) ?                                                  // input required ? 
+        (regex = RegExp(regexArr[`${input.type}`])) : (regex = RegExp('^$|'+ regexArr[`${input.type}`])); // True : regex en fonction du type d'input. False : regex idem mais avec la possibilité "empty
+      
+        const formattedToday = new Date().toJSON().slice(0,10);
+        (regex.test(input.value) && input.value < formattedToday) ?       // L'input match la regex et la date n'est pas dans le futur ? 
+          (isValid(input)) : (isInvalid(input));                            // show / hide errMsg
+        
+        userData.push(input.value);                                        // stocke la data
+        break;
+      
     case 'radio':
       let siblings = Array.from(input.parentNode.querySelectorAll('input'));  // retourn la nodList du parent de l'input 
       let oneIsChecked = siblings.find(e => e.checked);
